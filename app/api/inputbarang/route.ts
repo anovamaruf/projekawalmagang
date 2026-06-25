@@ -1,34 +1,15 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import alat from '@/models/alat';
-import cloudinary from '@/lib/cloudinary';
+// app/api/inputbarang/route.ts
+import dbConnect from "@/lib/mongodb";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+// Pastikan kamu mengekspor fungsi POST
+export async function POST(req: Request) {
   try {
     await dbConnect();
-    const data = await alat.find({}).sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, data });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    await dbConnect();
-    const dataInput = await request.json();
-
-    // Simpan data barang baru ke MongoDB beserta URL gambar Cloudinary
-    const barangBaru = await alat.create({
-      name: dataInput.name,
-      category: dataInput.category,
-      pricePerDay: Number(dataInput.pricePerDay),
-      stock: Number(dataInput.stock),
-      image: dataInput.image
-    });
-
-    return NextResponse.json({ success: true, data: barangBaru }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const body = await req.json();
+    // ... logika simpan datamu di sini ...
+    return NextResponse.json({ message: "Berhasil" }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal" }, { status: 500 });
   }
 }

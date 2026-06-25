@@ -23,7 +23,11 @@ async function dbConnect() {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+      console.log("Berhasil Terhubung ke MongoDB Atlas!");
       return mongooseInstance;
+    }).catch((err) => {
+      console.error("GAGAL KONEKSI KE ATLAS:", err);
+      throw err;
     });
   }
 
