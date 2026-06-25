@@ -1,26 +1,13 @@
-import mongoose, { Schema, Document, model, models } from 'mongoose';
+// models/alat.ts
+import mongoose from 'mongoose';
 
-export interface IEquipment extends Document {
-  name: string;
-  category: string; // Contoh: Tenda, Carrier, Sepatu, Sleeping Bag, Alat Masak
-  pricePerDay: number;
-  stock: number;
-  image: string; // URL gambar dari Cloudinary nanti
-  isAvailable: boolean;
-  createdAt: Date;
-}
-
-const EquipmentSchema: Schema = new Schema({
-  name: { type: String, required: [true, 'Nama alat harus diisi'] },
-  category: { type: String, required: [true, 'Kategori alat harus diisi'] },
-  pricePerDay: { type: Number, required: [true, 'Harga sewa per hari harus diisi'] },
-  stock: { type: Number, required: [true, 'Jumlah stok harus diisi'], default: 1 },
-  image: { type: String, required: [true, 'Gambar alat harus diupload'] },
-  isAvailable: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
+const AlatSchema = new mongoose.Schema({
+  // pastikan field-nya sesuai dengan yang kamu kirim dari frontend
+  nama: String,
+  deskripsi: String,
+  harga: Number,
+  stok: Number
 });
 
-// Mencegah compile ulang model saat Next.js melakukan hot-reload (Turbopack)
-const Equipment = models.Equipment || model<IEquipment>('Equipment', EquipmentSchema);
-
-export default Equipment;
+// Penting: gunakan mongoose.models.Alat agar tidak error saat di-hot reload
+export default mongoose.models.Alat || mongoose.model('Alat', AlatSchema);

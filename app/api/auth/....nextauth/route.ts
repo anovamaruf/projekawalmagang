@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import { NextResponse } from "next/server";
-import Barang from "@/models/alat"; // Pastikan path model kamu benar
+import Barang from "@/models/alat";
 
 export async function GET() {
   try {
