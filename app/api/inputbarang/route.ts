@@ -1,15 +1,16 @@
-// app/api/inputbarang/route.ts
-import dbConnect from "@/lib/mongodb";
+import connectMongoDB from "@/lib/mongodb";
+import Alat from "@/models/alat"; // Pastikan modelmu benar
 import { NextResponse } from "next/server";
 
-// Pastikan kamu mengekspor fungsi POST
+export async function GET() {
+  await connectMongoDB();
+  const data = await Alat.find({});
+  return NextResponse.json({ success: true, data });
+}
+
 export async function POST(req: Request) {
-  try {
-    await dbConnect();
-    const body = await req.json();
-    // ... logika simpan datamu di sini ...
-    return NextResponse.json({ message: "Berhasil" }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Gagal" }, { status: 500 });
-  }
+  await connectMongoDB();
+  const body = await req.json();
+  const newAlat = await Alat.create(body);
+  return NextResponse.json({ success: true, data: newAlat });
 }
