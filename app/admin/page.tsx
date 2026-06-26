@@ -1,5 +1,5 @@
 'use client';
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from 'react';
 
 export default function AdminPage() {
@@ -63,15 +63,26 @@ export default function AdminPage() {
     );
   }
 
-const emailAdmin = "anovamaruf@gmail.com"; 
-
-if (session?.user?.email !== emailAdmin) {
-  return <div>Akses Ditolak! Kamu bukan Admin.</div>;
-}
+  const emailAdmin = "anovamaruf@gmail.com"; 
+  if (session?.user?.email !== emailAdmin) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white">
+        <p className="mb-4">Akses Ditolak! Kamu bukan Admin.</p>
+        <button onClick={() => signOut()} className="bg-red-600 px-4 py-2 rounded-lg">Logout</button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-950 p-6 text-white font-sans">
-      <h1 className="text-2xl font-bold text-green-500 mb-6">Admin Dashboard</h1>
+      {/* HEADER BARU DENGAN TOMBOL NAVIGASI */}
+      <div className="flex justify-between items-center mb-6 max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold text-green-500">Admin Dashboard</h1>
+        <div className="flex gap-3">
+          <a href="/" className="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-lg text-sm transition">← Beranda</a>
+          <button onClick={() => signOut()} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">Logout</button>
+        </div>
+      </div>
       
       <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,18 +99,18 @@ if (session?.user?.email !== emailAdmin) {
             </label>
           </div>
           <button className="col-span-1 md:col-span-2 bg-green-600 hover:bg-green-700 py-3 rounded-lg font-bold transition text-white">
-            {loading ? 'Menyimpan...' : 'Simpan Inventaris'}
+            {loading ? 'Menyimpan...' : (isEditing ? 'Update Inventaris' : 'Simpan Inventaris')}
           </button>
         </form>
       </div>
 
-      <div className="mt-8 overflow-x-auto">
+      <div className="mt-8 overflow-x-auto max-w-4xl mx-auto">
         <table className="w-full bg-neutral-900 rounded-2xl overflow-hidden border border-neutral-800">
           <thead><tr className="text-green-500 text-left"><th className="p-4">Foto</th><th className="p-4">Nama</th><th className="p-4">Stok</th><th className="p-4">Harga</th><th className="p-4 text-center">Aksi</th></tr></thead>
           <tbody>
-            {listAlat.map((alat: any) => (
+            {Array.isArray(listAlat) && listAlat.map((alat: any) => (
               <tr key={alat._id} className="border-b border-neutral-800 hover:bg-neutral-800/50">
-                <td className="p-4"><img src={alat.image} className="w-12 h-12 object-cover rounded-lg" /></td>
+                <td className="p-4"><img src={alat.image} alt={alat.name} className="w-12 h-12 object-cover rounded-lg" /></td>
                 <td className="p-4">{alat.name}</td>
                 <td className="p-4 text-blue-400 font-bold">{alat.stock}</td>
                 <td className="p-4 text-orange-400">Rp {Number(alat.pricePerDay || 0).toLocaleString('id-ID')}</td>
