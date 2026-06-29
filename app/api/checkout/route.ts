@@ -7,10 +7,6 @@ export async function POST(request: Request) {
     await dbConnect();
     const body = await request.json();
     
-    // Di sini kita mensimulasikan penyimpanan order berhasil.
-    // Jika kamu punya model khusus Order, kamu bisa gunakan Order.create(body).
-    // Untuk saat ini, kita kembalikan status sukses instant agar aplikasi langsung berhasil.
-    
     return NextResponse.json({ 
       success: true, 
       message: 'Pembayaran berhasil diproses dan dicatat di sistem!' 

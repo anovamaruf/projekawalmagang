@@ -144,7 +144,6 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* SEKSI BARU: PILIHAN AMBIL DI TEMPAT ATAU DIANTAR */}
             <div className="pt-2">
               <label className="text-sm text-gray-400 block mb-2 font-semibold">Metode Penyerahan Alat:</label>
               <div className="grid grid-cols-2 gap-3">

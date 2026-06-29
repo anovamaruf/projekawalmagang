@@ -7,5 +7,4 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  // Pastikan tidak ada konfigurasi lain yang memblokir akses
 };

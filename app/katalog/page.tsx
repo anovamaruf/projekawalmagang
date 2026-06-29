@@ -84,7 +84,6 @@ export default function KatalogPage() {
           ))}
         </div>
 
-        {/* SIDEBAR KERANJANG */}
         <div className="w-full lg:w-80 bg-neutral-900/80 p-6 rounded-xl border border-gray-800 h-fit sticky top-6">
           <h2 className="text-xl font-bold mb-4 text-green-400">🛒 Keranjang ({keranjang.length})</h2>
           {keranjang.map((item) => (

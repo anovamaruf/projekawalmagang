@@ -9,8 +9,6 @@ export async function POST(request: Request) {
     if (!file) {
       return NextResponse.json({ success: false, message: 'Tidak ada file yang diunggah' }, { status: 400 });
     }
-
-    // Mengubah file buffer agar bisa dikirim ke Cloudinary
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 

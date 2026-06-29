@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import alat from '@/models/alat';
 
-// 1. API UNTUK MENGUBAH DATA BARANG (PUT)
 export async function PUT(
   request: Request, 
   { params }: { params: Promise<{ id: string }> }
@@ -10,13 +9,10 @@ export async function PUT(
   try {
     await dbConnect();
     
-    // Ambil data JSON yang dikirim oleh Frontend form admin
     const body = await request.json();
     
-    // Tunggu nilai params id nya selesai dibaca
     const { id } = await params; 
 
-    // Update data ke MongoDB berdasarkan ID
     const updatedEquipment = await alat.findByIdAndUpdate(
       id, 
       {
@@ -39,7 +35,6 @@ export async function PUT(
   }
 }
 
-// 2. API UNTUK MENGHAPUS BARANG (DELETE)
 export async function DELETE(
   request: Request, 
   { params }: { params: Promise<{ id: string }> }
