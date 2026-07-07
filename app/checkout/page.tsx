@@ -117,7 +117,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-neutral-950 text-white font-sans" style={{ backgroundColor: '#0a0a0a' }}>
       <nav className="border-b border-gray-800 bg-neutral-900 px-6 py-4 flex justify-between items-center" style={{ backgroundColor: '#141414', borderColor: '#262626' }}>
-        <Link href="/" className="text-xl font-bold text-green-500" style={{ color: '#22c55e' }}>⛺ OutdoorRent</Link>
+        <Link href="/" className="text-xl font-bold text-green-500" style={{ color: '#22c55e' }}>fynooOutdoorRent</Link>
         <Link href="/katalog" className="text-sm text-gray-400 hover:text-white">← Kembali ke Katalog</Link>
       </nav>
 

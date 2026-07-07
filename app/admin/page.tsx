@@ -1,6 +1,7 @@
 'use client';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from 'react';
+import Link from 'next/link'; // Tambahkan Link untuk navigasi
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -52,38 +53,31 @@ export default function AdminPage() {
   };
 
   if (status === "loading") return <div className="text-white p-10">Memuat...</div>;
+  if (!session) return (
+    <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white p-6">
+      <button onClick={() => signIn()} className="bg-green-600 px-6 py-3 rounded-lg font-bold">Login Admin Terlebih Dahulu</button>
+    </div>
+  );
 
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white p-6">
-        <button onClick={() => signIn()} className="bg-green-600 px-6 py-3 rounded-lg font-bold">
-          Login Admin Terlebih Dahulu
-        </button>
-      </div>
-    );
-  }
-
-  const emailAdmin = "anovamaruf@gmail.com"; 
-  if (session?.user?.email !== emailAdmin) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white">
-        <p className="mb-4">Akses Ditolak! Kamu bukan Admin.</p>
-        <button onClick={() => signOut()} className="bg-red-600 px-4 py-2 rounded-lg">Logout</button>
-      </div>
-    );
-  }
+  if (session?.user?.email !== "anovamaruf@gmail.com") return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white">
+      <p className="mb-4">Akses Ditolak!</p>
+      <button onClick={() => signOut()} className="bg-red-600 px-4 py-2 rounded-lg">Logout</button>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-neutral-950 p-6 text-white font-sans">
-      {/* HEADER BARU DENGAN TOMBOL NAVIGASI */}
       <div className="flex justify-between items-center mb-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-green-500">Admin Dashboard</h1>
         <div className="flex gap-3">
+          <Link href="/admin/orders" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition font-bold">📋 Lihat Pesanan</Link>
           <a href="/" className="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-lg text-sm transition">← Beranda</a>
           <button onClick={() => signOut()} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">Logout</button>
         </div>
       </div>
       
+      {/* Formulir Inventaris Tetap di sini */}
       <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" placeholder="Nama Alat" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />

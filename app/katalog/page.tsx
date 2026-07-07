@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function KatalogPage() {
   const router = useRouter();
@@ -36,7 +37,6 @@ export default function KatalogPage() {
     }
     setKeranjang(keranjangBaru);
     localStorage.setItem('keranjang_outdoor', JSON.stringify(keranjangBaru));
-    alert(`⛺ ${alat.name} berhasil dimasukkan ke keranjang!`);
   };
 
   const hapusDariKeranjang = (id: string) => {
@@ -51,52 +51,63 @@ export default function KatalogPage() {
   };
 
   const simpanDanLanjutCheckout = () => {
-    if (keranjang.length === 0) { alert('Keranjang kosong!'); return; }
+    if (keranjang.length === 0) { alert('Keranjang masih kosong!'); return; }
     localStorage.setItem('durasi_sewa_outdoor', String(durasiSewa));
     router.push('/checkout');
   };
 
-  if (loading) return <div className="text-center mt-10 text-gray-400">Memuat katalog...</div>;
-
   return (
-    <div className="max-w-7xl mx-auto p-6 min-h-screen text-white font-sans">
-      <nav className="border-b border-gray-800 bg-neutral-900/80 backdrop-blur px-6 py-4 flex justify-between items-center mb-6" style={{ borderRadius: '8px' }}>
-        <Link href="/" className="text-xl font-bold text-green-500">fynooOutdoorRent</Link>
-        <div className="flex gap-6 text-sm">
-          <Link href="/" className="text-gray-300">Home</Link>
-          <Link href="/katalog" className="text-green-500 font-bold">Katalog</Link>
-          <Link href="/admin" className="text-gray-300">Admin</Link>
+    <div className="min-h-screen bg-neutral-950 text-white font-sans p-6 md:p-10">
+      <nav className="max-w-7xl mx-auto mb-10 flex justify-between items-center bg-neutral-900/50 p-4 rounded-2xl border border-neutral-800 backdrop-blur">
+        <Link href="/" className="text-xl font-bold text-emerald-500">fynooOutdoorRent</Link>
+        <div className="flex gap-6 text-sm font-medium text-neutral-400">
+          <Link href="/" className="hover:text-emerald-400 transition">Home</Link>
+          <Link href="/katalog" className="text-emerald-500">Katalog</Link>
+          <Link href="/admin" className="hover:text-emerald-400 transition">Admin</Link>
         </div>
       </nav>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {listAlat.map((alat: any) => (
-            <div key={alat._id} className="border border-gray-800 rounded-xl p-5 bg-neutral-900/80 hover:border-green-600 transition flex flex-col">
-              <div className="w-full h-44 bg-neutral-800 rounded-lg overflow-hidden mb-4">
-                <img src={alat.image} alt={alat.name} className="w-full h-full object-cover" />
-              </div>
-              <h2 className="text-xl font-bold capitalize">{alat.name}</h2>
-              <p className="text-sm text-gray-400">Kategori: {alat.category}</p>
-              <p className="text-orange-500 font-semibold mt-1">Rp {Number(alat.pricePerDay || 0).toLocaleString('id-ID')}/hari</p>
-              <button onClick={() => tambahKeKeranjang(alat)} className="w-full mt-4 bg-green-600 hover:bg-green-700 py-2 rounded-lg font-bold">Sewa Sekarang</button>
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold mb-6">Pilih Perlengkapan Anda</h2>
+          {loading ? (
+            <p className="text-neutral-500">Memuat katalog...</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {listAlat.map((alat: any) => (
+                <motion.div key={alat._id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 hover:border-emerald-500 transition">
+                  <img src={alat.image} alt={alat.name} className="w-full h-48 object-cover rounded-xl mb-4" />
+                  <h3 className="font-bold text-lg">{alat.name}</h3>
+                  <p className="text-emerald-400 font-bold my-2">Rp {Number(alat.pricePerDay || 0).toLocaleString('id-ID')}/hari</p>
+                  <button onClick={() => tambahKeKeranjang(alat)} className="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition">Sewa Sekarang</button>
+                </motion.div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
-        <div className="w-full lg:w-80 bg-neutral-900/80 p-6 rounded-xl border border-gray-800 h-fit sticky top-6">
-          <h2 className="text-xl font-bold mb-4 text-green-400">🛒 Keranjang ({keranjang.length})</h2>
-          {keranjang.map((item) => (
-            <div key={item._id} className="flex justify-between items-center border-b border-gray-800 pb-2 mb-2 text-sm">
-              <div>{item.name} <br/> <span className="text-gray-400 text-xs">{item.qty} x Rp {item.pricePerDay}</span></div>
-              <button onClick={() => hapusDariKeranjang(item._id)} className="text-red-500 text-xs">Hapus</button>
+        <div className="w-full lg:w-96 bg-neutral-900 border border-neutral-800 p-6 rounded-3xl h-fit sticky top-6">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">🛒 Keranjang <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-lg text-sm">{keranjang.length}</span></h2>
+          <div className="space-y-4 mb-6">
+            {keranjang.map((item) => (
+              <div key={item._id} className="flex justify-between items-center bg-neutral-950 p-3 rounded-xl border border-neutral-800">
+                <div className="text-sm">
+                  <p className="font-bold">{item.name}</p>
+                  <p className="text-neutral-400 text-xs">{item.qty} x Rp {item.pricePerDay}</p>
+                </div>
+                <button onClick={() => hapusDariKeranjang(item._id)} className="text-red-500 hover:text-red-400 text-xs">Hapus</button>
+              </div>
+            ))}
+          </div>
+          
+          <div className="border-t border-neutral-800 pt-6">
+            <label className="text-xs text-neutral-400 uppercase font-bold tracking-wider">Durasi Sewa (Hari)</label>
+            <input type="number" value={durasiSewa} onChange={e => setDurasiSewa(Number(e.target.value))} className="w-full bg-neutral-950 border border-neutral-800 p-3 rounded-xl mt-2 mb-4 outline-none focus:border-emerald-500" />
+            <div className="flex justify-between font-bold text-lg mb-6">
+              <span>Total:</span>
+              <span className="text-emerald-400">Rp {hitungTotalSemua().toLocaleString('id-ID')}</span>
             </div>
-          ))}
-          <div className="mt-4">
-            <label className="text-xs text-gray-400">Durasi Sewa (Hari):</label>
-            <input type="number" value={durasiSewa} onChange={e => setDurasiSewa(Number(e.target.value))} className="w-full bg-neutral-800 p-2 rounded mt-1" />
-            <div className="flex justify-between mt-4 font-bold text-lg"><span>Total:</span><span className="text-orange-500">Rp {hitungTotalSemua().toLocaleString('id-ID')}</span></div>
-            <button onClick={simpanDanLanjutCheckout} className="w-full mt-4 bg-orange-500 py-3 rounded-lg font-bold">Lanjut Checkout</button>
+            <button onClick={simpanDanLanjutCheckout} className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-bold transition">Lanjut Checkout</button>
           </div>
         </div>
       </div>
