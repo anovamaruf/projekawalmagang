@@ -88,7 +88,7 @@ export default function AdminPage() {
           <input type="number" className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" placeholder="Stok" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
           <div className="col-span-1 md:col-span-2">
             <label className="flex items-center justify-center w-full py-3 bg-neutral-800 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-green-500 transition font-bold text-gray-300">
-              {formData.image ? "✅ Foto Sudah Terpilih" : "📸 Tambahkan Gambar/Foto"}
+              {formData.image ? "Foto Sudah Terpilih" : " Tambahkan Gambar/Foto"}
               <input type="file" className="hidden" onChange={handleFileUpload} />
             </label>
           </div>

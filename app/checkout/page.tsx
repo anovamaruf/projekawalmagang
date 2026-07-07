@@ -39,12 +39,37 @@ export default function CheckoutPage() {
     return totalSatuHari * durasiSewa;
   };
 
-  const buatBookingPending = (e: React.FormEvent) => {
+const buatBookingPending = async (e: React.FormEvent) => {
     e.preventDefault();
     if (keranjang.length === 0) return alert('Keranjang kamu kosong!');
     
-    setStatusSewa('pending');
-    setWaktuMundur(7); 
+    // Data yang akan dikirim ke database
+    const payload = {
+      ...formData,
+      items: keranjang,
+      totalPrice: hitungTotalSemua(),
+      durasiSewa,
+      opsiPengambilan,
+      metodeBayar, // <--- Ini yang memastikan metode bayar masuk
+      status: 'Pending'
+    };
+
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const hasil = await res.json();
+      if (hasil.success) {
+        setStatusSewa('pending');
+        setWaktuMundur(7); 
+      } else {
+        alert('Gagal memproses booking: ' + hasil.error);
+      }
+    } catch (err) {
+      alert('Terjadi kesalahan koneksi');
+    }
   };
 
   if (statusSewa === 'success') {
@@ -151,25 +176,17 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={() => setOpsiPengambilan('Ambil di Tempat')}
                   className="p-3 rounded-lg border font-medium text-sm transition text-center"
-                  style={{
-                    backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626',
-                    borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040',
-                    color: '#fff'
-                  }}
+                  style={{ backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040', color: '#fff' }}
                 >
-                  📍 Ambil di Tempat
+                   Ambil di Tempat
                 </button>
                 <button
                   type="button"
                   onClick={() => setOpsiPengambilan('Diantar / Delivery')}
                   className="p-3 rounded-lg border font-medium text-sm transition text-center"
-                  style={{
-                    backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626',
-                    borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040',
-                    color: '#fff'
-                  }}
+                  style={{ backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040', color: '#fff' }}
                 >
-                  🚚 Diantar / Delivery
+                   Diantar / Delivery
                 </button>
               </div>
             </div>

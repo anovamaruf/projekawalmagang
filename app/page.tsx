@@ -40,7 +40,7 @@ export default function HomePage() {
             href="/katalog" 
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition text-lg shadow-lg shadow-emerald-900/20"
           >
-            Sewa Alat 🛒
+            Sewa Alat 
           </Link>
           <Link 
             href="/admin" 

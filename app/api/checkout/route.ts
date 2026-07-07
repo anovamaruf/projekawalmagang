@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
-import alat from '@/models/alat'; // Memastikan model alat terimpor jika dibutuhkan
+import Order from '@/models/order';
 
 export async function POST(request: Request) {
   try {
     await dbConnect();
     const body = await request.json();
     
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Pembayaran berhasil diproses dan dicatat di sistem!' 
-    }, { status: 201 });
+    // Kita simpan SEMUA data yang dikirim dari form ke database
+    const newOrder = await Order.create({
+      customerName: body.namaPenyewa, 
+      nomorHp: body.nomorHp,
+      tanggalSewa: body.tanggalSewa,
+      durasiSewa: body.durasiSewa,
+      opsiPengambilan: body.opsiPengambilan,
+      alamatLengkap: body.alamatLengkap,
+      items: body.items,
+      totalPrice: body.totalPrice,
+      status: 'Pending'
+    });
     
+    return NextResponse.json({ success: true, data: newOrder });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
