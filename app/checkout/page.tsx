@@ -143,7 +143,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-sm border-b border-gray-800 pb-2" style={{ borderColor: '#262626' }}><span className="text-gray-400">Total Tagihan:</span><span className="font-bold text-orange-500" style={{ color: '#f97316' }}>Rp {hitungTotalSemua().toLocaleString('id-ID')}</span></div>
               <div className="text-xs text-gray-400 border-b border-gray-800 pb-2" style={{ borderColor: '#262626' }}><span>Metode Penyerahan: <strong>{opsiPengambilan}</strong></span>{opsiPengambilan === 'Diantar / Delivery' && <p className="mt-1 text-gray-300 italic">Tujuan: {formData.alamatLengkap}</p>}</div>
               {metodeBayar === 'Transfer Bank' ? (
-                <div className="text-xs space-y-1"><p className="text-gray-400 font-medium">Silakan transfer via ATM / M-Banking ke Rekening Kami</p><p className="text-sm font-bold text-gray-200 font-mono">BANK BCA: 0562677320</p><p className="text-gray-400 font-medium">a/n OutdoorRent Corp.</p></div>
+                <div className="text-xs space-y-1"><p className="text-gray-400 font-medium">Silakan transfer via ATM / M-Banking Rekening Kami</p><p className="text-sm font-bold text-gray-200 font-mono">BANK BCA: 0562677320</p><p className="text-gray-400 font-medium">a/n fynooOutdoorRent.</p></div>
               ) : (
                 <div className="text-center py-2"><div className="w-32 h-32 bg-white mx-auto flex items-center justify-center font-bold text-black rounded-lg text-xs"> [GAMBAR QRIS ASLI]</div><p className="text-xs text-gray-400 mt-2">Buka aplikasi Dana/Gopay/OVO lalu scan barcode di atas</p></div>
               )}
