@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "fynoo Outdoor Rent",
   description: "Penyewaan Alat Outdoor Terlengkap, Termurah dan Terpercaya",
+  icons: {
+    icon: '/logo.svg', 
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +32,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {/* Bungkus children dengan provider di sini */}
         <NextAuthSessionProvider>
           {children}
         </NextAuthSessionProvider>

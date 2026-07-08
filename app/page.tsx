@@ -52,7 +52,7 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-neutral-900 py-8 text-center text-sm text-neutral-600">
-        © 2026 fynooOutdoorRent App. All Rights Reserved.
+        © 2026 fynooOutdoorRent App.
       </footer>
 
     </div>

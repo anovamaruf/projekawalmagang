@@ -7,7 +7,6 @@ export async function POST(request: Request) {
     await dbConnect();
     const body = await request.json();
     
-    // Kita simpan SEMUA data yang dikirim dari form ke database
     const newOrder = await Order.create({
       customerName: body.namaPenyewa, 
       nomorHp: body.nomorHp,

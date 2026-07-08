@@ -1,7 +1,7 @@
 'use client';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from 'react';
-import Link from 'next/link'; // Tambahkan Link untuk navigasi
+import Link from 'next/link'; 
 
 export default function AdminPage() {
   const { data: session, status } = useSession();
@@ -71,24 +71,23 @@ export default function AdminPage() {
       <div className="flex justify-between items-center mb-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-green-500">Admin Dashboard</h1>
         <div className="flex gap-3">
-          <Link href="/admin/orders" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition font-bold">📋 Lihat Pesanan</Link>
-          <a href="/" className="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-lg text-sm transition">← Beranda</a>
+          <Link href="/admin/orders" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition font-bold"> Lihat Pesanan</Link>
+          <a href="/" className="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-lg text-sm transition">Beranda</a>
           <button onClick={() => signOut()} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">Logout</button>
         </div>
       </div>
       
-      {/* Formulir Inventaris Tetap di sini */}
       <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl max-w-2xl mx-auto">
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" placeholder="Nama Alat" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
           <select className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-            <option>Tenda</option><option>Carrier</option><option>Sepatu</option><option>Sleeping Bag</option><option>Alat Bantu Mendaki</option><option>Alat Camping</option>
+            <option>Tenda</option><option>Carrier</option><option>Sepatu</option><option>Alat Bantu Mendaki</option><option>Alat Camping</option>
           </select>
           <input type="number" className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" placeholder="Harga/hari" value={formData.pricePerDay} onChange={e => setFormData({...formData, pricePerDay: e.target.value})} />
           <input type="number" className="bg-neutral-800 p-3 rounded-lg border border-neutral-700 outline-none" placeholder="Stok" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
           <div className="col-span-1 md:col-span-2">
             <label className="flex items-center justify-center w-full py-3 bg-neutral-800 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-green-500 transition font-bold text-gray-300">
-              {formData.image ? "Foto Sudah Terpilih" : " Tambahkan Gambar/Foto"}
+              {formData.image ? "Gambar telah ditambahkan" : " Tambahkan Gambar"}
               <input type="file" className="hidden" onChange={handleFileUpload} />
             </label>
           </div>
@@ -100,12 +99,13 @@ export default function AdminPage() {
 
       <div className="mt-8 overflow-x-auto max-w-4xl mx-auto">
         <table className="w-full bg-neutral-900 rounded-2xl overflow-hidden border border-neutral-800">
-          <thead><tr className="text-green-500 text-left"><th className="p-4">Foto</th><th className="p-4">Nama</th><th className="p-4">Stok</th><th className="p-4">Harga</th><th className="p-4 text-center">Aksi</th></tr></thead>
+          <thead><tr className="text-green-500 text-left"><th className="p-4">Foto</th><th className="p-4">Nama</th><th className="p-4">Kategori</th><th className="p-4">Stok</th><th className="p-4">Harga</th><th className="p-4 text-center">Aksi</th></tr></thead>
           <tbody>
             {Array.isArray(listAlat) && listAlat.map((alat: any) => (
               <tr key={alat._id} className="border-b border-neutral-800 hover:bg-neutral-800/50">
                 <td className="p-4"><img src={alat.image} alt={alat.name} className="w-12 h-12 object-cover rounded-lg" /></td>
                 <td className="p-4">{alat.name}</td>
+                <td className="p-4 text-xs uppercase tracking-wider text-neutral-400">{alat.category}</td>
                 <td className="p-4 text-blue-400 font-bold">{alat.stock}</td>
                 <td className="p-4 text-orange-400">Rp {Number(alat.pricePerDay || 0).toLocaleString('id-ID')}</td>
                 <td className="p-4 text-center">

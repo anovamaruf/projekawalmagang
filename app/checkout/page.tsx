@@ -13,6 +13,7 @@ export default function CheckoutPage() {
 
   const [statusSewa, setStatusSewa] = useState<'form' | 'pending' | 'success'>('form');
   const [waktuMundur, setWaktuMundur] = useState(7);
+  
   useEffect(() => {
     const isiKeranjang = localStorage.getItem('keranjang_outdoor');
     const isiDurasi = localStorage.getItem('durasi_sewa_outdoor');
@@ -39,22 +40,29 @@ export default function CheckoutPage() {
     return totalSatuHari * durasiSewa;
   };
 
-const buatBookingPending = async (e: React.FormEvent) => {
+  const buatBookingPending = async (e: React.FormEvent) => {
     e.preventDefault();
     if (keranjang.length === 0) return alert('Keranjang kamu kosong!');
     
-    // Data yang akan dikirim ke database
-    const payload = {
-      ...formData,
-      items: keranjang,
-      totalPrice: hitungTotalSemua(),
-      durasiSewa,
-      opsiPengambilan,
-      metodeBayar, // <--- Ini yang memastikan metode bayar masuk
-      status: 'Pending'
-    };
-
     try {
+      for (const item of keranjang) {
+        await fetch(`/api/inputbarang/${item._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'KURANGI', jumlah: item.qty })
+        });
+      }
+      
+      const payload = {
+        ...formData,
+        items: keranjang,
+        totalPrice: hitungTotalSemua(),
+        durasiSewa,
+        opsiPengambilan,
+        metodeBayar, 
+        status: 'Pending'
+      };
+
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -119,20 +127,20 @@ const buatBookingPending = async (e: React.FormEvent) => {
             </div>
             {metodeBayar === 'Transfer Bank' ? (
               <div className="text-xs space-y-1">
-                <p className="text-gray-400 font-medium">Silakan transfer via ATM / M-Banking ke: 0562677320</p>
+                <p className="text-gray-400 font-medium">Silakan transfer via ATM / M-Banking ke Rekening Kami</p>
                 <p className="text-sm font-bold text-gray-200 font-mono">BANK BCA: 0562677320</p>
                 <p className="text-gray-400 font-medium">a/n OutdoorRent Corp.</p>
               </div>
             ) : (
               <div className="text-center py-2">
-                <div className="w-32 h-32 bg-white mx-auto flex items-center justify-center font-bold text-black rounded-lg text-xs">📷 [GAMBAR QRIS ASLI]</div>
+                <div className="w-32 h-32 bg-white mx-auto flex items-center justify-center font-bold text-black rounded-lg text-xs"> [GAMBAR QRIS ASLI]</div>
                 <p className="text-xs text-gray-400 mt-2">Buka aplikasi Dana/Gopay/OVO lalu scan barcode di atas</p>
               </div>
             )}
           </div>
 
           <p className="text-xs text-gray-500 animate-pulse" style={{ color: '#737373' }}>
-            🔄 Menunggu verifikasi mutasi sistem otomatis... (Simulasi: {waktuMundur}s)
+             Menunggu verifikasi mutasi sistem otomatis... (Simulasi: {waktuMundur}s)
           </p>
         </div>
       </div>
@@ -143,7 +151,7 @@ const buatBookingPending = async (e: React.FormEvent) => {
     <div className="min-h-screen bg-neutral-950 text-white font-sans" style={{ backgroundColor: '#0a0a0a' }}>
       <nav className="border-b border-gray-800 bg-neutral-900 px-6 py-4 flex justify-between items-center" style={{ backgroundColor: '#141414', borderColor: '#262626' }}>
         <Link href="/" className="text-xl font-bold text-green-500" style={{ color: '#22c55e' }}>fynooOutdoorRent</Link>
-        <Link href="/katalog" className="text-sm text-gray-400 hover:text-white">← Kembali ke Katalog</Link>
+        <Link href="/katalog" className="text-sm text-gray-400 hover:text-white"> Kembali ke Katalog</Link>
       </nav>
 
       <div className="max-w-4xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
@@ -168,44 +176,19 @@ const buatBookingPending = async (e: React.FormEvent) => {
                 <input type="number" min="1" required value={durasiSewa} disabled className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-gray-400 text-sm cursor-not-allowed" style={{ backgroundColor: '#1f1f1f', borderColor: '#404040' }}/>
               </div>
             </div>
-
             <div className="pt-2">
               <label className="text-sm text-gray-400 block mb-2 font-semibold">Metode Penyerahan Alat:</label>
               <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setOpsiPengambilan('Ambil di Tempat')}
-                  className="p-3 rounded-lg border font-medium text-sm transition text-center"
-                  style={{ backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040', color: '#fff' }}
-                >
-                   Ambil di Tempat
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setOpsiPengambilan('Diantar / Delivery')}
-                  className="p-3 rounded-lg border font-medium text-sm transition text-center"
-                  style={{ backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040', color: '#fff' }}
-                >
-                   Diantar / Delivery
-                </button>
+                <button type="button" onClick={() => setOpsiPengambilan('Ambil di Tempat')} className="p-3 rounded-lg border font-medium text-sm transition text-center" style={{ backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040', color: '#fff' }}>Ambil di Tempat</button>
+                <button type="button" onClick={() => setOpsiPengambilan('Diantar / Delivery')} className="p-3 rounded-lg border font-medium text-sm transition text-center" style={{ backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040', color: '#fff' }}>Diantar / Delivery</button>
               </div>
             </div>
-
             {opsiPengambilan === 'Diantar / Delivery' && (
               <div className="p-3 rounded-lg border bg-neutral-950 border-gray-800 animate-fadeIn" style={{ backgroundColor: '#0a0a0a', borderColor: '#262626' }}>
                 <label className="text-sm text-gray-400 block mb-1 font-medium text-orange-400">Alamat Lengkap Pengiriman:</label>
-                <textarea 
-                  required
-                  rows={2}
-                  placeholder="Ketik jalan, nomor rumah, nomor gang, atau patokan lokasi..."
-                  value={formData.alamatLengkap} 
-                  onChange={(e) => setFormData({...formData, alamatLengkap: e.target.value})} 
-                  className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-white text-xs" 
-                  style={{ backgroundColor: '#262626', borderColor: '#404040' }}
-                />
+                <textarea required rows={2} placeholder="nama jalan, nomor rumah, nomor gang, atau patokan lokasi" value={formData.alamatLengkap} onChange={(e) => setFormData({...formData, alamatLengkap: e.target.value})} className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-white text-xs" style={{ backgroundColor: '#262626', borderColor: '#404040' }} />
               </div>
             )}
-
             <div className="pt-2">
               <label className="text-sm text-gray-400 block mb-2 font-semibold">Pilih Metode Pembayaran Mandiri:</label>
               <div className="space-y-2">
@@ -219,13 +202,11 @@ const buatBookingPending = async (e: React.FormEvent) => {
                 </label>
               </div>
             </div>
-
             <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition text-center mt-4" style={{ backgroundColor: '#16a34a', borderRadius: '8px' }}>
               Booking & Bayar Sekarang
             </button>
           </form>
         </div>
-
         <div className="bg-neutral-900 p-6 rounded-xl border border-gray-800 h-fit" style={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '12px' }}>
           <h2 className="text-xl font-bold mb-4 text-orange-500" style={{ color: '#f97316' }}>Ringkasan Sewa</h2>
           <div className="divide-y divide-gray-800 mb-4" style={{ borderColor: '#262626' }}>

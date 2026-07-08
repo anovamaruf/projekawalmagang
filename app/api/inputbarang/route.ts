@@ -1,5 +1,5 @@
 import connectMongoDB from "@/lib/mongodb";
-import Alat from "@/models/alat"; // Pastikan modelmu benar
+import Alat from "@/models/alat";
 import { NextResponse } from "next/server";
 
 export async function GET() {

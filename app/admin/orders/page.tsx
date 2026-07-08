@@ -13,16 +13,51 @@ export default function AdminOrdersPage() {
     } catch (err) { console.error("Gagal ambil data:", err); }
   }
 
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/orders/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if ((await res.json()).success) fetchOrders();
+      else alert("Gagal update status");
+    } catch (err) { alert("Error saat update"); }
+  };
+
+  const prosesPengembalian = async (order: any) => {
+    try {
+      const res = await fetch(`/api/orders/${order._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'Selesai' }),
+      });
+      
+      const hasil = await res.json();
+      if (hasil.success) {
+        for (const item of order.items) {
+          await fetch(`/api/inputbarang/${item._id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'TAMBAH', jumlah: item.qty }),
+          });
+        }
+        fetchOrders();
+      } else {
+        alert("Gagal memproses pengembalian");
+      }
+    } catch (err) { 
+      console.error(err);
+      alert("Error saat memproses"); 
+    }
+  };
+
   const hapusOrder = async (id: string) => {
     if (!confirm("Yakin ingin menghapus pesanan ini?")) return;
     try {
       const res = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
-      const hasil = await res.json();
-      if (hasil.success) {
-        setOrders(orders.filter(o => o._id !== id));
-      } else {
-        alert("Gagal menghapus!");
-      }
+      if ((await res.json()).success) setOrders(orders.filter(o => o._id !== id));
+      else alert("Gagal menghapus!");
     } catch (err) { alert("Error saat menghapus"); }
   };
 
@@ -48,23 +83,47 @@ export default function AdminOrdersPage() {
             <div key={o._id} className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 shadow-lg relative">
               <div className="flex justify-between items-start border-b border-neutral-800 pb-4 mb-4">
                 <div>
-                  {/* Cek kedua kemungkinan nama field */}
                   <h2 className="text-lg font-bold text-white">{o.customerName || o.namaPenyewa || "Tanpa Nama"}</h2>
                   <p className="text-sm text-neutral-400">WA: {o.nomorHp || o.whatsapp || "-"}</p>
                 </div>
-                <div className="text-right flex flex-col items-end gap-2">
-                  <p className="text-green-500 font-bold text-lg">Rp {o.totalPrice?.toLocaleString() || "0"}</p>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] uppercase bg-neutral-800 px-2 py-1 rounded">{o.status || "Pending"}</span>
-                    <button onClick={() => hapusOrder(o._id)} className="text-red-500 hover:text-red-400 text-xs font-bold underline">HAPUS</button>
-                  </div>
+                
+                <div className="flex items-center gap-3">
+                  <span className={`text-[10px] uppercase px-3 py-1 rounded-full font-bold border ${
+                    o.status === 'Selesai' ? 'bg-green-900/30 text-green-400 border-green-800' : 'bg-orange-900/30 text-orange-400 border-orange-800'
+                  }`}>
+                    {o.status || "Pending"}
+                  </span>
+
+                  {o.status === 'Pending' && (
+                    <button 
+                      onClick={() => updateStatus(o._id, 'Dipinjam')}
+                      className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold transition-all"
+                    >
+                      ALAT DIAMBIL
+                    </button>
+                  )}
+
+                  {o.status === 'Dipinjam' && (
+                    <button 
+                      onClick={() => prosesPengembalian(o)}
+                      className="px-4 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-[11px] font-bold transition-all"
+                    >
+                      ALAT DIKEMBALIKAN
+                    </button>
+                  )}
+
+                  <button 
+                    onClick={() => hapusOrder(o._id)}
+                    className="px-4 py-1.5 rounded-lg bg-neutral-800 hover:bg-red-900/50 text-neutral-400 hover:text-red-400 text-[11px] font-bold transition-all border border-neutral-700"
+                  >
+                    HAPUS
+                  </button>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-xs font-bold text-neutral-500 uppercase mb-2">Data Diri & Pengiriman</h3>
-                  {/* Cek kedua kemungkinan field */}
                   <p className="text-sm">Tanggal: {o.tanggalSewa || "-"}</p>
                   <p className="text-sm">Durasi: {o.durasiSewa || "-"} Hari</p>
                   <p className="text-sm">Opsi: {o.opsiPengambilan || "-"}</p>
@@ -76,6 +135,7 @@ export default function AdminOrdersPage() {
                     {o.items?.map((item: any, idx: number) => (
                       <li key={idx} className="flex justify-between text-sm bg-neutral-950 p-2 rounded">
                         <span>{item.name || "Barang"} <span className="text-neutral-500">x{item.qty || 1}</span></span>
+                        <span className="font-bold text-green-500">Rp {Number(item.pricePerDay || 0).toLocaleString()}</span>
                       </li>
                     ))}
                   </ul>
