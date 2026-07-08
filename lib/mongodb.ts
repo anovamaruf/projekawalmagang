@@ -1,15 +1,30 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = "mongodb://127.0.0.1:27017/rentaloutdoor";
+const MONGODB_URI = process.env.MONGODB_URI;
 
-const connectMongoDB = async () => {
-  try {
-    if (mongoose.connection.readyState >= 1) return;
-    await mongoose.connect(MONGODB_URI);
-    console.log("Database Lokal Terhubung!");
-  } catch (error) {
-    console.error("Gagal konek ke database:", error);
+if (!MONGODB_URI) {
+  throw new Error('Tolong definisikan MONGODB_URI di file .env.local');
+}
+
+let cached = (global as any).mongoose;
+
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+async function dbConnect() {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    const opts = { bufferCommands: false };
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+      console.log("Terhubung ke MongoDB Atlas!");
+      return mongoose;
+    });
   }
-};
+  
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
 
-export default connectMongoDB;
+export default dbConnect;
