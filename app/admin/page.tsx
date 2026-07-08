@@ -7,6 +7,7 @@ export default function AdminPage() {
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({ name: '', category: 'Tenda', pricePerDay: '', stock: '', image: '' });
   const [listAlat, setListAlat] = useState([]);
+  const [listPesanan, setListPesanan] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState('');
@@ -19,8 +20,19 @@ export default function AdminPage() {
     } catch (err) { console.error("Gagal ambil data:", err); }
   };
 
+  const fetchPesanan = async () => {
+    try {
+      const res = await fetch('/api/orders'); 
+      const hasil = await res.json();
+      if (hasil.success) setListPesanan(hasil.data);
+    } catch (err) { console.error("Gagal ambil data pesanan:", err); }
+  };
+
   useEffect(() => {
-    if (session) fetchBarang();
+    if (session) {
+      fetchBarang();
+      fetchPesanan();
+    }
   }, [session]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +83,7 @@ export default function AdminPage() {
       <div className="flex justify-between items-center mb-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-green-500">Admin Dashboard</h1>
         <div className="flex gap-3">
-          <Link href="/admin/orders" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition font-bold"> Lihat Pesanan</Link>
+          <Link href="/admin/orders" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition font-bold">Lihat Pesanan ({listPesanan.length})</Link>
           <a href="/" className="bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-lg text-sm transition">Beranda</a>
           <button onClick={() => signOut()} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">Logout</button>
         </div>

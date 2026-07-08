@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
+// 1. Ekspor authOptions agar bisa dipakai di API route lain (seperti /api/orders/route.ts)
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -9,6 +10,9 @@ const handler = NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-});
+};
+
+// 2. Handler untuk NextAuth
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

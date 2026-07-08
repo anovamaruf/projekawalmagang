@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema({
+  // Tambahkan field userId agar terhubung dengan akun user yang login
+  userId: { type: String, required: true }, 
+  
   customerName: String,
   namaPenyewa: String, 
   nomorHp: String,
@@ -13,4 +16,7 @@ const OrderSchema = new mongoose.Schema({
   status: { type: String, default: 'Pending' }, 
 }, { timestamps: true });
 
-export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
+// Gunakan pengecekan model agar tidak error saat hot-reload
+const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
+
+export default Order;
