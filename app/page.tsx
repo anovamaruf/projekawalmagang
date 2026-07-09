@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="flex gap-6 text-sm font-medium">
           <Link href="/" className="text-emerald-500">Home</Link>
           <Link href="/katalog" className="text-neutral-400 hover:text-emerald-400 transition">Katalog</Link>
-          <Link href="/admin" className="text-neutral-400 hover:text-emerald-400 transition">Admin Panel</Link>
+          <Link href="/admin" className="hover:text-emerald-400 transition">Admin Panel</Link>
         </div>
       </nav>
 
@@ -38,13 +38,15 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
           <Link 
             href="/katalog" 
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition text-lg shadow-lg shadow-emerald-900/20"
+            onClick={() => { if(navigator.vibrate) navigator.vibrate(20); }}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition text-lg shadow-lg shadow-emerald-900/20 active:scale-95 duration-100"
           >
             Sewa Alat 
           </Link>
           <Link 
             href="/admin" 
-            className="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 font-medium px-8 py-4 rounded-xl transition text-lg"
+            onClick={() => { if(navigator.vibrate) navigator.vibrate(20); }}
+            className="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 font-medium px-8 py-4 rounded-xl transition text-lg active:scale-95 duration-100"
           >
             Kelola Gudang
           </Link>
