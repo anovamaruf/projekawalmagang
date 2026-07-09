@@ -14,7 +14,7 @@ export default function CheckoutPage() {
   const [formData, setFormData] = useState({ namaPenyewa: '', nomorHp: '', tanggalSewa: '', alamatLengkap: '' });
 
   const [statusSewa, setStatusSewa] = useState<'form' | 'pending' | 'success'>('form');
-  const [waktuMundur, setWaktuMundur] = useState(7);
+  const [waktuMundur, setWaktuMundur] = useState(15);
   const [showLoginModal, setShowLoginModal] = useState(false);
   
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
 
       if (hasil.success) {
         setStatusSewa('pending');
-        setWaktuMundur(7); 
+        setWaktuMundur(15); 
       } else {
         alert('Gagal memproses booking: ' + hasil.error);
       }
@@ -142,27 +142,27 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-sm border-b border-gray-800 pb-2" style={{ borderColor: '#262626' }}><span className="text-gray-400">Total Tagihan:</span><span className="font-bold text-orange-500" style={{ color: '#f97316' }}>Rp {hitungTotalSemua().toLocaleString('id-ID')}</span></div>
               <div className="text-xs text-gray-400 border-b border-gray-800 pb-2" style={{ borderColor: '#262626' }}><span>Metode Penyerahan: <strong>{opsiPengambilan}</strong></span>{opsiPengambilan === 'Diantar / Delivery' && <p className="mt-1 text-gray-300 italic">Tujuan: {formData.alamatLengkap}</p>}</div>
               ) : (
-  <div className="text-center py-2">  
-    <img 
-      src="https://res.cloudinary.com/drtw0hnds/image/upload/v1783570351/qris_fynoo_zqu4mz.jpg" 
-      alt="QRIS fynooOutdoorRent" 
-      className="w-32 h-32 mx-auto rounded-lg object-contain bg-white p-1 transition-all duration-300 hover:scale-105 cursor-pointer shadow-lg" 
-      onClick={() => {
-        if(navigator.vibrate) navigator.vibrate(50);
-        const modal = document.createElement('dialog');
-        modal.innerHTML = `
-          <div style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:9999;">
-            <img src="https://res.cloudinary.com/drtw0hnds/image/upload/v1783570351/qris_fynoo_zqu4mz.jpg" style="max-width:90%; max-height:90%; border-radius:16px;" />
-          </div>
-        `;
-        modal.onclick = () => modal.close();
-        document.body.appendChild(modal);
-        modal.showModal();
-        modal.onclose = () => modal.remove();
-      }}
-    />
-    <p className="text-xs text-neutral-400 mt-2">Klik gambar untuk memperbesar scan</p>
-  </div>
+           <div className="text-center py-2">  
+              <img 
+                src="https://res.cloudinary.com/drtw0hnds/image/upload/v1783570351/qris_fynoo_zqu4mz.jpg" 
+                alt="QRIS fynooOutdoorRent" 
+                className="w-32 h-32 mx-auto rounded-lg object-contain bg-white p-1 transition-all duration-300 hover:scale-105 cursor-pointer shadow-lg" 
+                  onClick={() => {
+                  if(navigator.vibrate) navigator.vibrate(50);
+                  const modal = document.createElement('dialog');
+                 modal.innerHTML = `
+                  <div style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:9999;">
+                  <img src="https://res.cloudinary.com/drtw0hnds/image/upload/v1783570351/qris_fynoo_zqu4mz.jpg" style="max-width:90%; max-height:90%; border-radius:16px;" />
+           </div>
+             `;
+                 modal.onclick = () => modal.close();
+               document.body.appendChild(modal);
+                modal.showModal();
+                modal.onclose = () => modal.remove();
+         }}
+         />
+            <p className="text-xs text-neutral-400 mt-2">Klik gambar untuk memperbesar scan</p>
+            </div>
             </div>
             <p className="text-xs text-gray-500 animate-pulse" style={{ color: '#737373' }}>Menunggu verifikasi mutasi sistem otomatis... (Simulasi: {waktuMundur}s)</p>
           </div>
