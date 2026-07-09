@@ -127,7 +127,7 @@ export default function CheckoutPage() {
           <div className="bg-neutral-900 p-8 rounded-2xl border border-green-600 text-center max-w-md w-full shadow-2xl" style={{ backgroundColor: '#171717', borderColor: '#166534', borderRadius: '16px' }}>
             <div className="w-20 h-20 bg-green-950 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 border border-green-600" style={{ backgroundColor: '#052e16', color: '#22c55e', borderColor: '#166534' }}>✓</div>
             <h1 className="text-2xl font-bold text-white mb-2">Pembayaran Berhasil!</h1>
-            <p className="text-gray-400 text-sm mb-6" style={{ color: '#a3a3a3' }}>Sistem mendeteksi dana telah masuk. Nota {formData.namaPenyewa} dinyatakan **LUNAS**. Metode penyerahan: **{opsiPengambilan}**. Slot alat outdoor aman!</p>
+            <p className="text-gray-400 text-sm mb-6" style={{ color: '#a3a3a3' }}>Sistem mendeteksi dana telah masuk. Nota {formData.namaPenyewa} dinyatakan **LUNAS**. Metode penyerahan: **{opsiPengambilan}**. alat outdoor yang anda booking aman!</p>
             <button onClick={() => { if(navigator.vibrate) navigator.vibrate(50); router.push('/'); }} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition active:scale-95 duration-150 text-center" style={{ backgroundColor: '#16a34a', borderRadius: '12px' }}>Kembali ke Beranda</button>
           </div>
         </div>
