@@ -1,22 +1,37 @@
-'use client';
+"use client";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleMainButton = () => {
+    if (!session) {
+      signIn(); // Paksa login jika belum ada session
+    } else if (session.user?.role === "admin") {
+      router.push("/admin"); // Lempar admin ke dashboard
+    } else {
+      router.push("/katalog"); // Lempar user ke katalog
+    }
+  };
+
   return (
     <div className="min-h-screen bg-neutral-950 text-white font-sans flex flex-col justify-between">
-
+      {/* NAVBAR */}
       <nav className="border-b border-neutral-800 bg-neutral-900/50 backdrop-blur-md px-6 py-4 flex justify-between items-center sticky top-0 z-50">
         <div className="text-xl font-bold text-emerald-500 flex items-center gap-2">
            fynooOutdoorRent
         </div>
         <div className="flex gap-6 text-sm font-medium">
           <Link href="/" className="text-emerald-500">Home</Link>
-          <Link href="/katalog" className="text-neutral-400 hover:text-emerald-400 transition">Katalog</Link>
-          <Link href="/admin" className="hover:text-emerald-400 transition">Admin Panel</Link>
+          {/* Link Katalog & Admin disembunyikan agar tampilan bersih */}
         </div>
       </nav>
 
+      {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 max-w-3xl mx-auto py-20">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
@@ -35,28 +50,20 @@ export default function HomePage() {
           Tempat Penyewaan dan perlengkapan Alat gunung terbaik tanpa ribet. Tinggal pilih, checkout, dan langsung gas muncak!
         </p>
         
+        {/* TOMBOL PINTAR */}
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-          <Link 
-            href="/katalog" 
-            onClick={() => { if(navigator.vibrate) navigator.vibrate(20); }}
+          <button 
+            onClick={handleMainButton}
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-4 rounded-xl transition text-lg shadow-lg shadow-emerald-900/20 active:scale-95 duration-100"
           >
-            Sewa Alat 
-          </Link>
-          <Link 
-            href="/admin" 
-            onClick={() => { if(navigator.vibrate) navigator.vibrate(20); }}
-            className="bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 font-medium px-8 py-4 rounded-xl transition text-lg active:scale-95 duration-100"
-          >
-            Kelola Gudang
-          </Link>
+            {!session ? "Masuk" : (session.user?.role === "admin" ? "Ke Dashboard Admin" : "Sewa Alat")}
+          </button>
         </div>
       </main>
 
       <footer className="border-t border-neutral-900 py-8 text-center text-sm text-neutral-600">
         © 2026 fynooOutdoorRent App.
       </footer>
-
     </div>
   );
 }
