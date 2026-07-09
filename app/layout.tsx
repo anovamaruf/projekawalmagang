@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextAuthSessionProvider from "./provider";
-import UserButton from "./UserButton"; // Pastikan path ini benar
+import UserButton from "./UserButton";
+import LoadingOverlay from "./LoadingOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,15 +33,14 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col relative">
+        <LoadingOverlay />
         <NextAuthSessionProvider>
-          {/* Header Navigasi */}
           <header className="flex justify-between items-center p-4 border-b border-gray-800">
             <span className="font-bold text-lg">fynoo Outdoor Rent</span>
             <UserButton />
           </header>
           
-          {/* Konten Utama */}
           <main className="flex-grow">
             {children}
           </main>
