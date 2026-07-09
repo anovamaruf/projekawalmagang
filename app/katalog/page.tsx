@@ -34,6 +34,7 @@ export default function KatalogPage() {
     : listAlat.filter((alat: any) => alat.category === kategoriTerpilih);
 
   const tambahKeKeranjang = (alat: any) => {
+    if(navigator.vibrate) navigator.vibrate(20);
     const sudahAda = keranjang.find((item) => item._id === alat._id);
     let keranjangBaru;
     if (sudahAda) {
@@ -48,6 +49,7 @@ export default function KatalogPage() {
   };
 
   const hapusDariKeranjang = (id: string) => {
+    if(navigator.vibrate) navigator.vibrate(20);
     const keranjangBaru = keranjang.filter((item) => item._id !== id);
     setKeranjang(keranjangBaru);
     localStorage.setItem('keranjang_outdoor', JSON.stringify(keranjangBaru));
@@ -59,6 +61,7 @@ export default function KatalogPage() {
   };
 
   const simpanDanLanjutCheckout = () => {
+    if(navigator.vibrate) navigator.vibrate(50);
     if (keranjang.length === 0) { alert('Keranjang masih kosong!'); return; }
     localStorage.setItem('durasi_sewa_outdoor', String(durasiSewa));
     router.push('/checkout');
@@ -83,8 +86,8 @@ export default function KatalogPage() {
               {daftarKategori.map((kat) => (
                 <button 
                   key={kat}
-                  onClick={() => setKategoriTerpilih(kat)}
-                  className={`px-4 py-2 rounded-full text-sm font-bold transition ${
+                  onClick={() => { if(navigator.vibrate) navigator.vibrate(20); setKategoriTerpilih(kat); }}
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition active:scale-95 duration-100 ${
                     kategoriTerpilih === kat 
                       ? 'bg-emerald-600 text-white' 
                       : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-emerald-500'
@@ -132,7 +135,7 @@ export default function KatalogPage() {
                   <button 
                     onClick={() => tambahKeKeranjang(alat)} 
                     disabled={alat.stock <= 0}
-                    className={`w-full py-3 rounded-xl font-bold transition ${
+                    className={`w-full py-3 rounded-xl font-bold transition active:scale-95 duration-100 ${
                       alat.stock > 0 
                         ? 'bg-emerald-600 hover:bg-emerald-500 text-white' 
                         : 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
@@ -167,7 +170,7 @@ export default function KatalogPage() {
               <span>Total:</span>
               <span className="text-emerald-400">Rp {hitungTotalSemua().toLocaleString('id-ID')}</span>
             </div>
-            <button onClick={simpanDanLanjutCheckout} className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-bold transition">Lanjut Checkout</button>
+            <button onClick={simpanDanLanjutCheckout} className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-bold transition active:scale-95 duration-100">Lanjut Checkout</button>
           </div>
         </div>
       </div>

@@ -10,8 +10,11 @@ export default function LoginPage() {
         <p className="text-neutral-400 mb-8">Silakan masuk menggunakan akun Google Anda</p>
         
         <button
-          onClick={() => signIn("google", { callbackUrl: "/katalog" })}
-          className="w-full px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-neutral-200 transition duration-200"
+          onClick={() => {
+            if(navigator.vibrate) navigator.vibrate(50);
+            signIn("google", { callbackUrl: "/katalog" });
+          }}
+          className="w-full px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-neutral-200 transition duration-200 active:scale-95"
         >
           Login dengan Google
         </button>

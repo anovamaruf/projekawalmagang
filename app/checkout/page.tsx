@@ -21,7 +21,6 @@ export default function CheckoutPage() {
     const isiKeranjang = localStorage.getItem('keranjang_outdoor');
     const isiDurasi = localStorage.getItem('durasi_sewa_outdoor');
     
-    // AMBIL DATA YANG TERSIMPAN JIKA ADA
     const savedFormData = localStorage.getItem('temp_checkout_data');
     
     if (isiKeranjang) setKeranjang(JSON.parse(isiKeranjang));
@@ -54,8 +53,8 @@ export default function CheckoutPage() {
 
   const buatBookingPending = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (navigator.vibrate) navigator.vibrate(50);
     
-    // SIMPAN DATA SEBELUM LOGIN
     localStorage.setItem('temp_checkout_data', JSON.stringify(formData));
 
     if (status === "unauthenticated") {
@@ -91,7 +90,7 @@ export default function CheckoutPage() {
       });
       
       const hasil = await res.json();
-  
+ 
       if (res.status === 401) {
         setShowLoginModal(true);
         return;
@@ -116,7 +115,7 @@ export default function CheckoutPage() {
             <h2 className="text-xl font-bold text-white mb-2">Ups, Perlu Login!</h2>
             <p className="text-gray-400 mb-6">Harap login dengan Google untuk melanjutkan proses pemesanan alat outdoor kamu.</p>
             <div className="flex flex-col gap-3">
-              <button onClick={() => signIn()} className="bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">Login Sekarang</button>
+              <button onClick={() => { if(navigator.vibrate) navigator.vibrate(50); signIn(); }} className="bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition active:scale-95 duration-150">Login Sekarang</button>
               <button onClick={() => setShowLoginModal(false)} className="text-gray-500 hover:text-white transition text-sm">Nanti saja</button>
             </div>
           </div>
@@ -129,7 +128,7 @@ export default function CheckoutPage() {
             <div className="w-20 h-20 bg-green-950 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 border border-green-600" style={{ backgroundColor: '#052e16', color: '#22c55e', borderColor: '#166534' }}>✓</div>
             <h1 className="text-2xl font-bold text-white mb-2">Pembayaran Berhasil!</h1>
             <p className="text-gray-400 text-sm mb-6" style={{ color: '#a3a3a3' }}>Sistem mendeteksi dana telah masuk. Nota {formData.namaPenyewa} dinyatakan **LUNAS**. Metode penyerahan: **{opsiPengambilan}**. Slot alat outdoor aman!</p>
-            <button onClick={() => router.push('/')} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition text-center" style={{ backgroundColor: '#16a34a', borderRadius: '12px' }}>Kembali ke Beranda</button>
+            <button onClick={() => { if(navigator.vibrate) navigator.vibrate(50); router.push('/'); }} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition active:scale-95 duration-150 text-center" style={{ backgroundColor: '#16a34a', borderRadius: '12px' }}>Kembali ke Beranda</button>
           </div>
         </div>
       ) : statusSewa === 'pending' ? (
@@ -164,10 +163,10 @@ export default function CheckoutPage() {
                   <div><label className="text-sm text-gray-400 block mb-1">Tanggal Mulai Sewa:</label><input type="date" required value={formData.tanggalSewa} onChange={(e) => setFormData({...formData, tanggalSewa: e.target.value})} className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-white text-sm" style={{ backgroundColor: '#262626', borderColor: '#404040' }}/></div>
                   <div><label className="text-sm text-gray-400 block mb-1">Durasi Sewa (Hari):</label><input type="number" min="1" required value={durasiSewa} disabled className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-gray-400 text-sm cursor-not-allowed" style={{ backgroundColor: '#1f1f1f', borderColor: '#404040' }}/></div>
                 </div>
-                <div className="pt-2"><label className="text-sm text-gray-400 block mb-2 font-semibold">Metode Penyerahan Alat:</label><div className="grid grid-cols-2 gap-3"><button type="button" onClick={() => setOpsiPengambilan('Ambil di Tempat')} className="p-3 rounded-lg border font-medium text-sm transition text-center" style={{ backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040', color: '#fff' }}>Ambil di Tempat</button><button type="button" onClick={() => setOpsiPengambilan('Diantar / Delivery')} className="p-3 rounded-lg border font-medium text-sm transition text-center" style={{ backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040', color: '#fff' }}>Diantar / Delivery</button></div></div>
+                <div className="pt-2"><label className="text-sm text-gray-400 block mb-2 font-semibold">Metode Penyerahan Alat:</label><div className="grid grid-cols-2 gap-3"><button type="button" onClick={() => { if(navigator.vibrate) navigator.vibrate(20); setOpsiPengambilan('Ambil di Tempat'); }} className="p-3 rounded-lg border font-medium text-sm transition active:scale-95 duration-100 text-center" style={{ backgroundColor: opsiPengambilan === 'Ambil di Tempat' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Ambil di Tempat' ? '#22c55e' : '#404040', color: '#fff' }}>Ambil di Tempat</button><button type="button" onClick={() => { if(navigator.vibrate) navigator.vibrate(20); setOpsiPengambilan('Diantar / Delivery'); }} className="p-3 rounded-lg border font-medium text-sm transition active:scale-95 duration-100 text-center" style={{ backgroundColor: opsiPengambilan === 'Diantar / Delivery' ? '#16a34a' : '#262626', borderColor: opsiPengambilan === 'Diantar / Delivery' ? '#22c55e' : '#404040', color: '#fff' }}>Diantar / Delivery</button></div></div>
                 {opsiPengambilan === 'Diantar / Delivery' && (<div className="p-3 rounded-lg border bg-neutral-950 border-gray-800 animate-fadeIn" style={{ backgroundColor: '#0a0a0a', borderColor: '#262626' }}><label className="text-sm text-gray-400 block mb-1 font-medium text-orange-400">Alamat Lengkap Pengiriman:</label><textarea required rows={2} placeholder="nama jalan, nomor rumah, nomor gang, atau patokan lokasi" value={formData.alamatLengkap} onChange={(e) => setFormData({...formData, alamatLengkap: e.target.value})} className="w-full bg-neutral-800 border border-gray-700 rounded p-2 text-white text-xs" style={{ backgroundColor: '#262626', borderColor: '#404040' }} /></div>)}
                 <div className="pt-2"><label className="text-sm text-gray-400 block mb-2 font-semibold">Pilih Metode Pembayaran Mandiri:</label><div className="space-y-2"><label className="flex items-center gap-3 p-3 bg-neutral-800 rounded border border-gray-700 cursor-pointer" style={{ backgroundColor: '#262626', borderColor: '#404040' }}><input type="radio" name="payment" value="Transfer Bank" checked={metodeBayar === 'Transfer Bank'} onChange={() => setMetodeBayar('Transfer Bank')}/><div className="text-sm"><p className="font-medium text-gray-200">Virtual Account / Bank Transfer</p></div></label><label className="flex items-center gap-3 p-3 bg-neutral-800 rounded border border-gray-700 cursor-pointer" style={{ backgroundColor: '#262626', borderColor: '#404040' }}><input type="radio" name="payment" value="QRIS" checked={metodeBayar === 'QRIS'} onChange={() => setMetodeBayar('QRIS')}/><div className="text-sm"><p className="font-medium text-gray-200">QRIS / E-Wallet Instant</p></div></label></div></div>
-                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition text-center mt-4" style={{ backgroundColor: '#16a34a', borderRadius: '8px' }}>Booking & Bayar Sekarang</button>
+                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition active:scale-95 duration-150 text-center mt-4" style={{ backgroundColor: '#16a34a', borderRadius: '8px' }}>Booking & Bayar Sekarang</button>
               </form>
             </div>
             <div className="bg-neutral-900 p-6 rounded-xl border border-gray-800 h-fit" style={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '12px' }}>
